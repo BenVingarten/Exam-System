@@ -2,6 +2,9 @@ package application;
 	
 import javax.swing.JOptionPane;
 
+import application.Controller.Controller;
+import application.Model.Manager;
+import application.View.UserInterface;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,6 +26,9 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		//TODO
+		Manager theModel = new Manager();
+		UserInterface userInterface = new UserInterface(primaryStage);
+		Controller controller = new Controller(theModel, userInterface);
 	}
 	
 	public static void main(String[] args) {
