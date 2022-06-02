@@ -29,62 +29,72 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 
+
 public class UserInterface implements AbstractUserInterface, Main_Interface{
 	private Vector<UIListener> allListeners = new Vector<UIListener>();
 	private String userInputString;
 	private int userInputInt;
 	
-	public UserInterface(Stage stage) {
-		stage.setTitle("Manu");
+	public UserInterface(Stage mainStage) {
+		mainStage.setTitle("Manu");
 		
 		VBox manu = new VBox();
 		Label chooseTask = new Label("Please choose the task you want");
 		
-		
-		ToggleGroup optionsToggleGroup = new ToggleGroup();
-		RadioButton case1 = new RadioButton("Present database and exmas (all Q&A) ");
-		RadioButton case2 = new RadioButton("Add Question (to the Exam and or data base ");
-		RadioButton case3 = new RadioButton("Update content of an existing question ");
-		RadioButton case4 = new RadioButton("Update content of an existing answer ");
-		RadioButton case5 = new RadioButton("Delete an answer to an existing question ");
-		RadioButton case6 = new RadioButton("Create exam manually ");
-		RadioButton case7 = new RadioButton("Create exam automatically ");
-		RadioButton case8 = new RadioButton("Create exam duplicate ");
-		RadioButton case9 = new RadioButton("Create and show Set ");
-		RadioButton case10 = new RadioButton("Exit");
-		case1.setToggleGroup(optionsToggleGroup);
-		case2.setToggleGroup(optionsToggleGroup);
-		case3.setToggleGroup(optionsToggleGroup);
-		case4.setToggleGroup(optionsToggleGroup);
-		case5.setToggleGroup(optionsToggleGroup);
-		case6.setToggleGroup(optionsToggleGroup);
-		case7.setToggleGroup(optionsToggleGroup);
-		case8.setToggleGroup(optionsToggleGroup);
-		case9.setToggleGroup(optionsToggleGroup);
-		case10.setToggleGroup(optionsToggleGroup);
+		Button presentInfoButton = new Button("Present database and exmas (all Q&A)");
+		Button addQuestionButton = new Button("Add Question (to the Exam and or data base");
+		Button updateQuestionButton = new Button("Update content of an existing question");
+		Button updateAnswerButton = new Button("Update content of an existing answer");
+		Button deletAnswerButton = new Button("Delete an answer to an existing question");
+		Button createManualExamButton = new Button("Create exam manually");
+		Button createAutoExamButton = new Button("Create exam automatically");
+		Button duplicateExamButton = new Button("Duplicate Exam");
+		Button createAndShowSetButton = new Button("Create and show Set");
+		Button ExitButton = new Button("Exit");
 		
 		
 		
-		case1.setOnAction(new EventHandler<ActionEvent>(){
+		presentInfoButton.setOnAction(new EventHandler<ActionEvent>() {
+		
 			@Override
-			public void handle(ActionEvent e) {
-				PresentInfo(allListeners);
-				
-				
+			public void handle(ActionEvent arg0) {
+				try {
+					getIntFromUser("What would you like to view: \n1) Repository Questions \n2) Exams created", 1, 2);
+					PresentInfo(allListeners);
+				} catch (InvalidUserInputException | DataNotCreatedYetException | FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
+		
 		});
 		
-		manu.getChildren().addAll(chooseTask, case1, case2, case3, case4,
-				case5, case6, case7, case8, case9, case10);
+		
+		
+		
+		ExitButton.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent arg0) {
+			mainStage.close();
+			}
+		
+		});
+		
+		manu.getChildren().addAll( chooseTask, presentInfoButton, addQuestionButton, updateQuestionButton,
+				updateAnswerButton, deletAnswerButton, createManualExamButton, createAutoExamButton,
+				duplicateExamButton, createAndShowSetButton, ExitButton);
 		
 		manu.setSpacing(10);
 		manu.setPadding(new Insets(10));
 		
-		stage.setScene(new Scene(manu));
-		stage.show();
+		mainStage.setScene(new Scene(manu));
+		mainStage.show();
 		
 	}
-
+	
+	
+	
 	
 	@Override
 	public void registerListener(UIListener newListener) {
@@ -92,30 +102,52 @@ public class UserInterface implements AbstractUserInterface, Main_Interface{
 	}
 	
 	@Override
-	
-public void PresentInfo(Vector<UIListener> allListeners)
+	public void PresentInfo(Vector<UIListener> allListeners)
 			throws InvalidUserInputException, DataNotCreatedYetException, FileNotFoundException {
 		
-		Stage presentInfoStage = new Stage();
-		presentInfoStage.setTitle("Present Info");
 		
-		getIntFromUser("What would you like to view: \n1) Repository Questions \n2) Exams created");
-		//System.out.println("What would you like to view: \n1) Repository Questions \n2) Exams created");
-		int option = userInputInt;
-		((UIListener) allListeners).checkValidRangeFromUI(option, 1, 2);
-		if (option == 1) {
-			System.out.println(((UIListener) allListeners).printAllQuestionsFromUI());
+		
+		
+		int UserChose = userInputInt;
+		System.out.println(UserChose);
+		if (UserChose == 1) {
+			firePrintQuestions();
+			System.out.println("Entered");
+		}
+		
+		/*
+		}
+			System.out.println();
 		} else {
 			System.out.println(((UIListener) allListeners).getListOfExamsFromUI());
 			System.out.println("Please choose exam in list by number: ");
 			Exam selectedExam = ((UIListener) allListeners)manager.selectExamFromUI(input.nextInt());
 			((UIListener) allListeners).saveExamToFileFromUI(selectedExam);
 			System.out.println(selectedExam.toString());
-		}
+		}*/
 		
 		
 		
 	}
+	
+	public void firePrintQuestions() {
+		Stage presentInfoStage = new Stage();
+		VBox presentBox = new VBox();
+		presentInfoStage.setTitle("Prestent Info");
+		Label printLabel = new Label();
+		
+		for(UIListener listener : allListeners) 
+			printLabel.setText(listener.printAllQuestionsFromUI());
+		
+		presentBox.setSpacing(10);
+		presentBox.setPadding(new Insets(10));
+		presentBox.getChildren().add(printLabel);
+		
+		presentInfoStage.setScene(new Scene(presentBox));
+		presentInfoStage.show();
+		
+	}
+	
 
 	@Override
 	public Question createAmericanQ(Manager manager)
@@ -191,6 +223,8 @@ public void PresentInfo(Vector<UIListener> allListeners)
 		VBox alert = new VBox();
 		Label messageLabel = new Label(message);
 		
+		alert.setPadding(new Insets(50));
+		
 		alert.getChildren().add(messageLabel);
 		alertStage.setScene(new Scene(alert));
 		alertStage.show();
@@ -227,7 +261,7 @@ public void PresentInfo(Vector<UIListener> allListeners)
 		
 	}
 	
-	public void getIntFromUser(String text) {
+	public void getIntFromUser(String text, int min, int max) {
 		Stage talkToUserStage = new Stage();
 		talkToUserStage.setTitle("User Input");
 		
@@ -243,10 +277,21 @@ public void PresentInfo(Vector<UIListener> allListeners)
 		returnButton.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent e) {
-				userInputInt = Integer.parseInt(inpuTextField.getText());
-				
+				try {
+					userInputInt = Integer.parseInt(inpuTextField.getText());					
+					for(UIListener listener : allListeners) 
+						listener.checkValidRangeFromUI(userInputInt, 1, 2);
+					talkToUserStage.close();
+					
+				} catch (Exception e2) {
+					alertWindow("You must insert integer, and int range !");
+				}
+					
 			}
 		});
+		
+		userInputBox.setSpacing(10);
+		userInputBox.setPadding(new Insets(10));
 		
 		talkToUserStage.setScene(new Scene(userInputBox));
 		talkToUserStage.show();

@@ -8,6 +8,7 @@ import application.Exceptions.DataNotCreatedYetException;
 import application.Exceptions.GeneralSystemException;
 import application.Exceptions.InvalidUserInputException;
 import application.Listeners.UIListener;
+import javafx.stage.Stage;
 
 public interface Main_Interface {
 	//Question 1

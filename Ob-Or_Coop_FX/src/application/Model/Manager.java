@@ -360,10 +360,10 @@ public class Manager implements Serializable {
 	}
 
 	// Select 1 for American 2 for open
-	public int checkValidRange(int typeN, int min, int max) throws InvalidUserInputException {
+	public void checkValidRange(int typeN, int min, int max) throws InvalidUserInputException {
 		if (typeN < min || typeN > max)
 			throw new InvalidUserInputException("Option");
-		return typeN;
+		
 	}
 
 	// to string

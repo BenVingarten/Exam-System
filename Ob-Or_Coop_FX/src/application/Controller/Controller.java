@@ -24,6 +24,13 @@ public class Controller implements UIListener, ModelListener {
 		// TODO Auto-generated method stub
 		manager.checkValidRange(chosen, min, max);
 	}
+	
+	@Override
+	public String printAllQuestionsFromUI(){
+		return manager.printAllQuestions();
+	}
+	
+	
 
 
 	
