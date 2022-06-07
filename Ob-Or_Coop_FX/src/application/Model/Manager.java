@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Vector;
 import java.util.jar.Attributes.Name;
 import java.util.zip.CheckedInputStream;
 
@@ -20,14 +21,23 @@ import application.Exceptions.DataIdenticalException;
 import application.Exceptions.DataNotCreatedYetException;
 import application.Exceptions.GeneralSystemException;
 import application.Exceptions.InvalidUserInputException;
+import application.Listeners.ModelListener;
+import application.Listeners.UIListener;
 
 public class Manager implements Serializable {
 
 	Scanner scanner = new Scanner(System.in);
-
+	
+	private Vector<ModelListener> allListeners = new Vector();
+	
 	private ArrayList<Exam> allExams;
 	private ArrayList<Question> questionsArray;
 
+	public void registerListener(ModelListener newListener) {
+		allListeners.add(newListener);
+	}
+	
+	
 	// C'tor of the manager
 	public Manager() {
 		this.allExams = new ArrayList<Exam>();
@@ -360,19 +370,26 @@ public class Manager implements Serializable {
 	}
 
 	// Select 1 for American 2 for open
-	public void checkValidRange(int typeN, int min, int max) throws InvalidUserInputException {
+	public int checkValidRange(int typeN, int min, int max, int q) throws InvalidUserInputException {
 		if (typeN < min || typeN > max)
 			throw new InvalidUserInputException("Option");
+		return q;
 		
 	}
 
 	// to string
-	public String printAllQuestions() {// To String - print;
+	public void printAllQuestions() {// To String - print;
 		StringBuffer sBuffer = new StringBuffer();
 		sBuffer.append("There are " + questionsArray.size() + " Questions: \n");
 		for (Question q : questionsArray)
 			sBuffer.append((questionsArray.indexOf(q) + 1) + ") " + q.toString() + "\n");
-		return sBuffer.toString();
+		
+		System.out.println(sBuffer.toString());
+		
+		for(ModelListener listener: allListeners)
+			listener.showFromModel(sBuffer.toString());	
+		
+		
 	}
 
 	public String printExams() throws DataNotCreatedYetException {

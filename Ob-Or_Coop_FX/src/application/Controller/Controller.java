@@ -4,30 +4,30 @@ import application.Exceptions.InvalidUserInputException;
 import application.Listeners.ModelListener;
 import application.Listeners.UIListener;
 import application.Model.Manager;
-import application.View.AbstractUserInterface;
+import application.View.UserInterface;
 
 public class Controller implements UIListener, ModelListener {
 	private Manager manager;
-	private AbstractUserInterface userInterface;
+	private UserInterface userInterface;
 	
-	public Controller(Manager manager, AbstractUserInterface userInterface) {
+	public Controller(Manager manager, UserInterface userInterface) {
 		this.userInterface = userInterface;
 		this.manager = manager;
 		
 		this.userInterface.registerListener(this);
-		//register listiner to manager
+		this.manager.registerListener(this);
 		
 	}
 	
-	@Override
-	public void checkValidRangeFromUI(int chosen, int min, int max) throws InvalidUserInputException {
-		// TODO Auto-generated method stub
-		manager.checkValidRange(chosen, min, max);
-	}
+	
 	
 	@Override
-	public String printAllQuestionsFromUI(){
-		return manager.printAllQuestions();
+	public void printAllQuestionsFromUI(){
+		manager.printAllQuestions();
+	}
+	
+	public void showFromModel(String toPrint) {
+		userInterface.show(toPrint);
 	}
 	
 	

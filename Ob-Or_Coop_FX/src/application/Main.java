@@ -3,6 +3,7 @@ package application;
 import javax.swing.JOptionPane;
 
 import application.Controller.Controller;
+import application.Exceptions.GeneralSystemException;
 import application.Model.Manager;
 import application.View.UserInterface;
 import javafx.application.Application;
@@ -29,6 +30,13 @@ public class Main extends Application {
 		Manager theModel = new Manager();
 		UserInterface userInterface = new UserInterface(primaryStage);
 		Controller controller = new Controller(theModel, userInterface);
+		
+		try {
+			theModel.questionsRepository();
+		} catch (GeneralSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void main(String[] args) {
