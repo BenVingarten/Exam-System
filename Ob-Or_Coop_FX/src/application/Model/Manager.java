@@ -23,6 +23,9 @@ import application.Exceptions.GeneralSystemException;
 import application.Exceptions.InvalidUserInputException;
 import application.Listeners.ModelListener;
 import application.Listeners.UIListener;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 
 public class Manager implements Serializable {
 
@@ -185,14 +188,20 @@ public class Manager implements Serializable {
 	}
 
 	// Print Exams Name and Num
-	public String getListOfExams() throws DataNotCreatedYetException {// To String - print;
+	public ArrayList<String> getListOfExams() throws DataNotCreatedYetException {// To String - print;
 		if (this.allExams.size() == 0)
 			throw new DataNotCreatedYetException("Exams");
+		
+		ArrayList<String> examList = new ArrayList();
+		
 		StringBuffer sBuffer = new StringBuffer();
 		sBuffer.append("There are " + this.allExams.size() + " Exams: \n");
+
 		for (Exam ex : allExams)
-			sBuffer.append((allExams.indexOf(ex) + 1) + ") " + ex.getExamName() + "\n");
-		return sBuffer.toString();
+			examList.add(ex.getExamName());
+			
+
+		return examList;
 	}
 
 	// Print Questions Name and Num
@@ -216,7 +225,7 @@ public class Manager implements Serializable {
 
 	// Get Exam
 	public Exam getExam(int numOfExam) {
-		return allExams.get(numOfExam - 1);
+		return allExams.get(numOfExam);
 	}
 
 	// check if question Exists
@@ -235,6 +244,7 @@ public class Manager implements Serializable {
 
 	public Question addAmericanQToRepository(String qContent, ArrayList<Answer> ansArray)
 			throws DataIdenticalException, GeneralSystemException {
+		
 		for (int i = 0; i < ansArray.size(); i++) // check if there is same answer in array
 			for (int j = i + 1; j < ansArray.size(); j++)
 				if (ansArray.get(i).equals(ansArray.get(j)))
@@ -242,6 +252,17 @@ public class Manager implements Serializable {
 
 		AmericanQuestion tempQ = new AmericanQuestion(qContent, ansArray);
 		return checkIfCanAddQuestionAndAddIfPossible(tempQ);
+
+	}
+	
+	public Question addAmericanQToRepository(String qContent, ArrayList<TextField> allAnswersArrayList, ArrayList<ComboBox<Boolean>> answersTFArrayList)
+			throws DataIdenticalException, GeneralSystemException {
+		ArrayList<Answer> ansArray = new ArrayList<>();
+		for(int i = 0; i<allAnswersArrayList.size(); i++) {
+			ansArray.add(new Answer(allAnswersArrayList.get(i).getText(), answersTFArrayList.get(i).getValue()));
+		}
+		
+		return addAmericanQToRepository(qContent, ansArray);
 
 	}
 
@@ -384,7 +405,7 @@ public class Manager implements Serializable {
 		for (Question q : questionsArray)
 			sBuffer.append((questionsArray.indexOf(q) + 1) + ") " + q.toString() + "\n");
 		
-		System.out.println(sBuffer.toString());
+		
 		
 		for(ModelListener listener: allListeners)
 			listener.showFromModel(sBuffer.toString());	
