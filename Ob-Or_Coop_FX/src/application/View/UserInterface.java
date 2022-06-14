@@ -127,7 +127,7 @@ public class UserInterface {
 					generalBorderPane.setCenter(form);
 					
 					
-				}
+			 	}
 			
 			});
 			
