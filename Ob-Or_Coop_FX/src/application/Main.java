@@ -1,5 +1,7 @@
 package application;
 	
+import java.io.IOException;
+
 import javax.swing.JOptionPane;
 
 import application.Controller.Controller;
@@ -31,12 +33,9 @@ public class Main extends Application {
 		UserInterface userInterface = new UserInterface(primaryStage);
 		Controller controller = new Controller(theModel, userInterface);
 		
-		try {
-			theModel.questionsRepository();
-		} catch (GeneralSystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		controller.initialProgrem();
+		
+		
 	}
 	
 	public static void main(String[] args) {

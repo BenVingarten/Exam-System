@@ -1,4 +1,5 @@
 package application.Model;
+
 import java.util.ArrayList;
 
 import java.util.Iterator;
@@ -19,11 +20,6 @@ public class AmericanQuestion extends Question {
 		}
 
 		this.allAnswers.addAll(answers);
-
-		/*
-		 * Iterator <Answer> itr = allAnswers.iterator(); while(itr.hasNext()) {
-		 * if(itr.next().getIsRight()) { this.rightAnswers.add(itr.next()); } }
-		 */
 
 		for (int i = 0; i < allAnswers.size(); i++) { // check number of right answers
 			if (allAnswers.get(i).getIsRight()) {
@@ -70,6 +66,16 @@ public class AmericanQuestion extends Question {
 		return sBuffer.toString();
 	}
 
+	public ArrayList<String> getListOfAnswers() {
+
+		ArrayList<String> allAnswerArrayList = new ArrayList<>();
+
+		for (int i = 0; i < allAnswers.size() - 2; i++) {
+			allAnswerArrayList.add(allAnswers.get(i).getContent() + "\n");
+		}
+		return allAnswerArrayList;
+	}
+
 	// return A
 	public Answer getAnswer(int numOfAnswer) {
 		return allAnswers.get(numOfAnswer - 1);
@@ -90,7 +96,7 @@ public class AmericanQuestion extends Question {
 
 	// Delete Answer American Question
 	public boolean deleteAmericanAnswer(Answer answer, int aPosition) {
-		if (answer.getIsRight()) {
+		if (rightAnswers.contains(answer)) {
 			RemoveAndDecreaseRightAnswersCounter(answer);
 		}
 		checkForTrueAnswer();
@@ -100,7 +106,6 @@ public class AmericanQuestion extends Question {
 
 	// Check if there is any true answer
 	public void checkForTrueAnswer() {
-		Iterator<Answer> itr = allAnswers.iterator();
 
 		if (this.rightAnswers.size() == 0) {
 			this.allAnswers.get(allAnswers.size() - 2).setRight(); // none of the answers is right
@@ -180,10 +185,12 @@ public class AmericanQuestion extends Question {
 		while (itr.hasNext()) {
 			americanAnswersSet.add(itr.next());
 		}
-		/*
-		 * for(int i = 0; i < this.allAnswers.size(); i++)
-		 * americanAnswersSet.add(allAnswers.get(i));
-		 */
+
 	}
 
+	@Override
+	public String getQuestionType() {
+		return this.getClass().getSimpleName();
+	}
+	
 }

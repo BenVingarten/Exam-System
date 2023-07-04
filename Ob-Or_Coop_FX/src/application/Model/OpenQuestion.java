@@ -1,5 +1,7 @@
 package application.Model;
 
+import java.util.ArrayList;
+
 public class OpenQuestion extends Question {
 
 	private Answer answer;
@@ -45,4 +47,15 @@ public class OpenQuestion extends Question {
 		return this.getAnswer().getContent().length();
 	}
 
+	@Override
+	public ArrayList<String> getListOfAnswers() {
+		ArrayList<String> allAnswers = new ArrayList<>();
+		allAnswers.add(answer.getContent());
+		return allAnswers;
+	}
+
+	@Override
+	public String getQuestionType() {
+		return this.getClass().getSimpleName();
+	}
 }

@@ -1,0 +1,61 @@
+Answer to question number 1: non
+Answer to question number 2: nile
+Answer to question number 3: 1973
+Answer to question number 4: 1945
+Answer to question number 5: mango
+Answer to question number 6: black
+Answer to question number 7: falafel
+Answer to question number 8: baseball
+Answer to question number 9: issac newton
+Answer to question number 10: freddie mercury
+Answer to question number 11: david ben gurion
+Answer to question number 12: 1)Kabul | true
+2)Nassau | false
+3)None of the above is true | false
+4)More than one answer is true | false
+
+Answer to question number 13: 1)Berlin | true
+2)Munich | false
+3)None of the above is true | false
+4)More than one answer is true | false
+
+Answer to question number 14: 1)Prague | false
+2)Zagreb | true
+3)None of the above is true | false
+4)More than one answer is true | false
+
+Answer to question number 15: 1)Lima | true
+2)Asuncion | false
+3)None of the above is true | false
+4)More than one answer is true | false
+
+Answer to question number 16: 1)Zurich | false
+2)Geneve | false
+3)None of the above is true | true
+4)More than one answer is true | false
+
+Answer to question number 17: 1)vienna | false
+2)Belmopan | false
+3)None of the above is true | true
+4)More than one answer is true | false
+
+Answer to question number 18: 1)Tallinn | true
+2)Helsinki | false
+3)None of the above is true | false
+4)More than one answer is true | false
+
+Answer to question number 19: 1)Stockholm | true
+2)Dublin | false
+3)None of the above is true | false
+4)More than one answer is true | false
+
+Answer to question number 20: 1)Copenhagen | true
+2)Odense | false
+3)None of the above is true | false
+4)More than one answer is true | false
+
+Answer to question number 21: 1)Beijing | true
+2)Hong Kong | false
+3)None of the above is true | false
+4)More than one answer is true | false
+

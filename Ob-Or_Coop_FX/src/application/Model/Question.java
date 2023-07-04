@@ -1,5 +1,6 @@
 package application.Model;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import application.Exceptions.DataNotCreatedYetException;
 
@@ -27,10 +28,10 @@ public abstract class Question implements Serializable, Comparable<Question>, Cl
 
 	// public void setSerialNum()
 	abstract String printAnswers() throws DataNotCreatedYetException;
+	
+	public abstract ArrayList<String> getListOfAnswers();
 
-	public String getQuestionType() {
-		return this.getClass().getSimpleName();
-	}
+	public abstract String getQuestionType();
 
 	public abstract String saveQuestion();
 

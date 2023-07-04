@@ -1,4 +1,5 @@
 package application.Model;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -30,17 +31,16 @@ import javafx.scene.control.TextField;
 public class Manager implements Serializable {
 
 	Scanner scanner = new Scanner(System.in);
-	
+
 	private Vector<ModelListener> allListeners = new Vector();
-	
+
 	private ArrayList<Exam> allExams;
 	private ArrayList<Question> questionsArray;
 
 	public void registerListener(ModelListener newListener) {
 		allListeners.add(newListener);
 	}
-	
-	
+
 	// C'tor of the manager
 	public Manager() {
 		this.allExams = new ArrayList<Exam>();
@@ -182,8 +182,9 @@ public class Manager implements Serializable {
 
 	}
 
-	public void saveExamToFile(Exam exam) throws FileNotFoundException {
-		exam.saveExamDeatails();
+	public void saveExamToFile(int examNum) throws FileNotFoundException {
+		Exam currExam = allExams.get(examNum);
+		currExam.saveExamDeatails();
 
 	}
 
@@ -191,26 +192,23 @@ public class Manager implements Serializable {
 	public ArrayList<String> getListOfExams() throws DataNotCreatedYetException {// To String - print;
 		if (this.allExams.size() == 0)
 			throw new DataNotCreatedYetException("Exams");
-		
+
 		ArrayList<String> examList = new ArrayList();
-		
-		StringBuffer sBuffer = new StringBuffer();
-		sBuffer.append("There are " + this.allExams.size() + " Exams: \n");
 
 		for (Exam ex : allExams)
 			examList.add(ex.getExamName());
-			
 
 		return examList;
 	}
 
 	// Print Questions Name and Num
-	public String getListOfQuestions() {// To String - print;
-		StringBuffer sBuffer = new StringBuffer();
-		sBuffer.append("There are " + this.questionsArray.size() + " Questions: \n");
-		for (Question q : questionsArray)
-			sBuffer.append((questionsArray.indexOf(q) + 1) + ") " + q.getContent() + "\n");
-		return sBuffer.toString();
+	public ArrayList<String> getListOfQuestions() {// To String - print;
+		ArrayList<String> questionList = new ArrayList();
+
+		for (Question question : questionsArray)
+			questionList.add(question.getContent());
+
+		return questionList;
 	}
 
 	// Get Num of exams
@@ -244,7 +242,7 @@ public class Manager implements Serializable {
 
 	public Question addAmericanQToRepository(String qContent, ArrayList<Answer> ansArray)
 			throws DataIdenticalException, GeneralSystemException {
-		
+
 		for (int i = 0; i < ansArray.size(); i++) // check if there is same answer in array
 			for (int j = i + 1; j < ansArray.size(); j++)
 				if (ansArray.get(i).equals(ansArray.get(j)))
@@ -254,14 +252,14 @@ public class Manager implements Serializable {
 		return checkIfCanAddQuestionAndAddIfPossible(tempQ);
 
 	}
-	
-	public Question addAmericanQToRepository(String qContent, ArrayList<TextField> allAnswersArrayList, ArrayList<ComboBox<Boolean>> answersTFArrayList)
-			throws DataIdenticalException, GeneralSystemException {
+
+	public Question addAmericanQToRepository(String qContent, ArrayList<TextField> allAnswersArrayList,
+			ArrayList<ComboBox<Boolean>> answersTFArrayList) throws DataIdenticalException, GeneralSystemException {
 		ArrayList<Answer> ansArray = new ArrayList<>();
-		for(int i = 0; i<allAnswersArrayList.size(); i++) {
+		for (int i = 0; i < allAnswersArrayList.size(); i++) {
 			ansArray.add(new Answer(allAnswersArrayList.get(i).getText(), answersTFArrayList.get(i).getValue()));
 		}
-		
+
 		return addAmericanQToRepository(qContent, ansArray);
 
 	}
@@ -286,6 +284,11 @@ public class Manager implements Serializable {
 		return exam.addQuestion(question);
 	}
 
+	// add question to exam
+	public boolean addQuestionToExam(int selectedExam, int selectedQ) throws DataIdenticalException {
+		return allExams.get(selectedExam).addQuestion(questionsArray.get(selectedQ));
+	}
+
 	// Check if the content exists
 	public int isQuestionContentExist(String content) {
 		for (int i = 0; i < questionsArray.size(); i++) // can't use question.equals because we match only string
@@ -297,9 +300,9 @@ public class Manager implements Serializable {
 	}
 
 	// update Q content
-	public boolean updateQuestionContent(String content, Question question)
+	public boolean updateQuestionContent(String content, int questionNum)
 			throws DataIdenticalException, GeneralSystemException {
-
+		Question question = getQuestion(questionNum); // we pass index and get question is considering not index
 		int updateQuestion = isQuestionContentExist(content);
 		if (updateQuestion != -1)
 			if (question.getQuestionType().equals(questionsArray.get(updateQuestion).getQuestionType()))
@@ -310,23 +313,26 @@ public class Manager implements Serializable {
 
 	// Get Question
 	public Question getQuestion(int num) {
-		return questionsArray.get(num - 1);
+		return questionsArray.get(num);
 	}
 
 	public boolean deleteQuestion(int position) {
-		questionsArray.remove(position - 1);
+		questionsArray.remove(position);
 		return true;
 	}
 
 	// update answer for Open Question
-	public boolean updateOpenQAnswer(Answer answer, String aContent) {
-		return answer.checkContent(aContent);
+	public boolean updateOpenQAnswer(int questionNum, String aContent) {
+		OpenQuestion question = (OpenQuestion) getQuestion(questionNum);
+		return question.getAnswer().setContent(aContent);
 	}
 
 	// update answer for American Question
-	public boolean updateAmericanQAnswer(Answer answer, String aContent, boolean isRight, AmericanQuestion question)
+	public boolean updateAmericanQAnswer(int answerNum, String aContent, boolean isRight, int questionNum)
 			throws DataIdenticalException {
+		AmericanQuestion question = (AmericanQuestion) getQuestion(questionNum);
 		Answer updatedAnswer = new Answer(aContent, isRight);
+		Answer answer = question.getAnswer(answerNum);
 
 		if (question.isAnswerExists(updatedAnswer)) {
 			throw new DataIdenticalException("Answer");
@@ -381,7 +387,9 @@ public class Manager implements Serializable {
 
 	}
 
-	public boolean deleteAmericanQAnswer(AmericanQuestion q, int qPosition, Answer answer, int aPosition) {
+	public boolean deleteAmericanQAnswer(int qPosition, int aPosition) {
+		AmericanQuestion q = (AmericanQuestion) getQuestion(qPosition);
+		Answer answer = q.getAnswer(aPosition);
 		if (q.getNumOfAnswers() == 3) {
 			deleteQuestion(qPosition);
 			return false;
@@ -395,22 +403,18 @@ public class Manager implements Serializable {
 		if (typeN < min || typeN > max)
 			throw new InvalidUserInputException("Option");
 		return q;
-		
+
 	}
 
 	// to string
-	public void printAllQuestions() {// To String - print;
+	public String printAllQuestions() {// To String - print;
 		StringBuffer sBuffer = new StringBuffer();
 		sBuffer.append("There are " + questionsArray.size() + " Questions: \n");
 		for (Question q : questionsArray)
 			sBuffer.append((questionsArray.indexOf(q) + 1) + ") " + q.toString() + "\n");
-		
-		
-		
-		for(ModelListener listener: allListeners)
-			listener.showFromModel(sBuffer.toString());	
-		
-		
+
+		return sBuffer.toString();
+
 	}
 
 	public String printExams() throws DataNotCreatedYetException {
@@ -428,9 +432,10 @@ public class Manager implements Serializable {
 		outFile.close();
 	}
 
-	public void cloneExam(Exam exam) throws CloneNotSupportedException {
-		AddExamToArray(exam.clone());
-		allExams.get(allExams.size() - 1).setExamName(exam.getExamName() + "  (duplicate)");
+	public void cloneExam(int examNum) throws CloneNotSupportedException {
+		Exam currentExam = allExams.get(examNum);
+		AddExamToArray(currentExam.clone());
+		allExams.get(allExams.size() - 1).setExamName(currentExam.getExamName() + "  (duplicate)");
 
 	}
 
@@ -440,6 +445,17 @@ public class Manager implements Serializable {
 			if (q instanceof AmericanQuestion)
 				((AmericanQuestion) q).addAnswersToSet(americanAnswersSet);
 		return americanAnswersSet.tosString();
+	}
+
+	public void createManualExam(String name) throws DataIdenticalException {
+		Exam newExam = new Exam(name);
+		isExamNameExists(newExam);
+		allExams.add(newExam);
+	}
+
+	
+	public String getQuestionType(int questionNum) {
+		return questionsArray.get(questionNum).getQuestionType();
 	}
 
 }
